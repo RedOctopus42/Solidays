@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<title>StackSlider: A Fun 3D Image Slider</title>
+		<meta name="description" content="StackSlider: A Fun 3D Image Slider" />
+		<meta name="keywords" content="" />
+		<meta name="author" content="Codrops" />
+		<link rel="shortcut icon" href="../favicon.ico"> 
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+		<script src="js/modernizr.custom.63321.js"></script>
+		<script src="../lightbox/js/jquery-1.11.0.min.js"></script>
+		<script>
+        window.onload = function() 
+        {
+            var body = document.body;
+            body.onmousemove = body.onclick = body.onscroll = /* etc */ (function() {
+            var reload = function() {
+                window.location.replace('../kiosk.php');
+            },
+            timeout = window.setTimeout(reload, 20000);
+            return function() {
+                window.clearTimeout(timeout);
+                timeout = window.setTimeout(reload, 20000);
+                };
+            })();
+        };
+        </script>
+        <script src="../lightbox/js/lightbox.js"></script>
+        <link href="../lightbox/css/lightbox.css" rel="stylesheet" />
+		<!--[if lte IE 7]><style>.support-note .note-ie{display:block;}</style><![endif]-->
+	</head>
+	<body>
+		<div class="container">	
+
+			<!-- Codrops top bar -->
+			<div class="codrops-top clearfix">
+				<a href="http://tympanus.net/Development/SimpleDropDownEffects/">
+					<strong>&laquo; Previous Demo: </strong>Simple Effects for Drop-Down Lists
+				</a>
+				<span class="right">
+					<a href="http://dribbble.com/isaac317">Illustrations by Isaac Montemayor</a>
+					<a href="http://tympanus.net/codrops/?p=12566">
+						<strong>Back to the Codrops Article</strong>
+					</a>
+				</span>
+			</div><!--/ Codrops top bar -->
+			
+			<header class="clearfix">
+			
+				<h1>StackSlider<span>A fun 3D image slider</span></h1>
+				<p>Best viewed in WebKit browsers!</p>
+				<div class="support-note">
+					<span class="note-ie">Sorry, only modern browsers</span>
+				</div>
+				
+			</header>
+			
+			<section class="main">
+
+				<ul id="st-stack" class="st-stack-raw">
+					<?php 
+                        if ((isset($_GET['pseudo']))&&(!empty($_GET['pseudo']))) {
+                                affiche_img_ch($nomRepertoire);
+                        }
+
+                        function affiche_img_ch($nomRepertoire)
+                        { 
+                            // url du fichier qui contient les images  
+                            $urlphoto = "http://localhost/Kiosk/InputImage/";  
+                            $pseudo = $_GET['pseudo'];
+                            // nom du répertoire qui contient les images  
+                            $nomRepertoire = "../InputImage/"; 
+                            //function affiche_img($nomRepertoire){ 
+                            if(is_dir($nomRepertoire)) 
+                            { 
+                                $dossier = opendir($nomRepertoire); 
+                                //echo '<ul id="lastimg">';
+                                while ($Fichier = readdir($dossier))  
+                                { 
+                                    $c = similar_text($pseudo, $Fichier, $p);
+                                    //echo $p.'_'.$Fichier.'<br />';
+                                    if($p >= 30) 
+                                    {
+                                        if ($Fichier != "." AND $Fichier != ".." AND (stristr($Fichier,'.gif') OR stristr($Fichier,'.jpg') OR stristr($Fichier,'.png') OR stristr($Fichier,'.bmp'))) 
+                                        {  
+                                            // Hauteur de toutes les images  
+                                            $h_vign = "240";  
+                                            $taille = getimagesize($nomRepertoire."/".$Fichier);  
+                                            $reduc  = floor(($h_vign*100)/($taille[1]));  
+                                            $l_vign = floor(($taille[0]*$reduc)/2);  
+                                              echo '<li><div class="st-item">';
+                                              echo '<a href="', $urlphoto, '/',$Fichier, '" rel="lightbox">';
+                                              echo '<img src="', $urlphoto, '/',$Fichier, '"> ';  
+                                              //echo "width='$l_vign' height='$h_vign'>";  
+                                              echo '</a>'; 
+                                              echo '</div></li>'; 
+                                                
+                                        }
+                                    }
+                                    else
+                                    {
+                                        //echo 'Vous n\'avez pas de photo à imprimer <br />';
+                                        //echo $pseudo.'<br />';
+                                        
+
+                                    } 
+                                } //echo '</ul>';
+
+                               closedir($dossier); 
+                            }
+                            else
+                            { 
+                               echo' Le répertoire spécifié n\'existe pas'; 
+                            } 
+                        }
+                        ?>
+					
+				</ul>
+				<p>Tip: to see a continuous flow, keep your mouse pressed on the navigation arrows.</p>
+			</section>
+
+		</div><!-- /container -->
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<script type="text/javascript" src="js/jquery.stackslider.js"></script>
+		<script type="text/javascript">
+			
+			$( function() {
+				
+				$( '#st-stack' ).stackslider();
+
+			});
+
+		</script>
+	</body>
+</html>
